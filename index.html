@@ -10,28 +10,64 @@
 <body>
     <h1>MySQL</h1>
     <div id="root">
+        <label for="name">ID:</label>
+        <input type="number" name="name" id="name" min="1" max="4" value="1">
         <button id="btn-consultar">Consultar</button>
+        <br>
+        <br>
+        <h2>Log In</h2>
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username">
+        <br>
+        <br>
+        <label for="username">Password:</label>
+        <input type="password" name="password" id="password">
+        <br>
+        <br>
+        <button id="btn-login">Log In</button>
+
     </div>
     <script>
         const root = document.getElementById("root");
+        const value = document.getElementById("name");
         const btnConsultar = document.getElementById('btn-consultar') //as HTMLButtonElement;
-        const dataFetch = [];
-
+        const btnLogin = document.getElementById("btn-login");
+        const username = document.getElementById("username");
+        const password = document.getElementById("password");
+        
+        
         btnConsultar.addEventListener('click', ()=>{
-            console.log("click");
-            fetch('/usuarios')
+            let n = value.value - 1;
+            fetch('/users')
             .then(res => res.json())
             .then(data => {
                 const card = document.createElement('div');
                 card.innerHTML = `
-                    <h2>${data[0].ID}</h2>
-                    <h3>email: ${data[0].Email}</h3>
-                    <h4>Nickname: ${data[0].Nickname}</h4>
-                    <h4>Login: ${data[0].Login}</h4>
-                    <h4>Password: ${data[0].Password}</h4>
+                    <h2>${data[n].ID}</h2>
+                    <h3>email: ${data[n].Email}</h3>
+                    <h4>Nickname: ${data[n].Nickname}</h4>
+                    <h4>Login: ${data[n].Login}</h4>
+                    <h4>Password: ${data[n].Password}</h4>
                 `;
 
                 root.appendChild(card)
+            })
+        }); 
+
+        btnLogin.addEventListener('click', ()=>{
+            let response = false;
+            fetch('/users')
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(element => {
+                   if (element.Login == username.value || 
+                   element.Nickname == username.value ||
+                   element.Email == username.value &&
+                   element.Password == password.value) response = true
+                });
+
+                if (response) alert('Successfully logged')
+                else alert('wrong')
             })
         }); 
 

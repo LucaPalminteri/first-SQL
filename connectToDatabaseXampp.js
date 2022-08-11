@@ -1,23 +1,23 @@
 const mysql = require('mysql')
-var express = require('express');
+const express = require('express');
 const path = require('path')
 const fs = require('fs');
-var app = express();
+const app = express();
+const cors = require('cors');
+app.use(cors());
 
 // Express
 
-app.get('/', function (req, res,next) {
+app.get('/', function (req, res) {
     res.writeHead(200, {'content-type': 'text/html'})
-    //res.send("./index.html");
     fs.createReadStream('index.html').pipe(res);
-    // res.sendFile('main.js', {root: path.join(__dirname)}, (err) => {
-    //     if (err) {
-    //         next(err);
-    //     } else {
-    //         console.log('File Sent:', 'main.js');
-    //     }
-    // });
- })
+})
+
+app.get('/', function (req, res) {
+    res.writeHead(200, {'content-type': 'application/javascript'})
+    fs.createReadStream('main.js').pipe(res);
+})
+
 
 var server = app.listen(3000, function () {
    var host = server.address().address
@@ -53,6 +53,7 @@ conection.query('SELECT * FROM usuarios', (err,rows)=> {
     if(err) throw err
     usuarios = [];
     rows.forEach(row => {
+        console.log(row);
         dataRow = {
             ID: row.id,
             Login: row.login,
@@ -61,7 +62,7 @@ conection.query('SELECT * FROM usuarios', (err,rows)=> {
             Email: row.email}
         usuarios.push(dataRow);
     })
-    app.get('/usuarios', function (req, res) {
+    app.get('/users', function (req, res) {
         res.send(usuarios);
      })
 })
