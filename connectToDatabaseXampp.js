@@ -1,13 +1,27 @@
-const root = document.getElementById('root')
 const mysql = require('mysql')
+var express = require('express');
+var app = express();
 
-let html = '';
+// Express
+
+const cors = require("cors");
+app.use(cors());
+
+var server = app.listen(3000, function () {
+   var host = server.address().address
+   var port = server.address().port
+
+   console.log("Example app listening at http://%s:%s", host, port)
+})
+
+
+// Database MySql
 
 const conection = mysql.createConnection(
     {host: 'localhost',
     user: 'user',
     password: 'user',
-    database: 'databaseexample'
+    database: 'platziblog'
     }
 )
 
@@ -17,28 +31,28 @@ conection.connect( (err)=> {
 })
 
 //const insert = "INSERT INTO users (name,email,age) VALUES ('name','name@gmail.com',3)"
-const insert = "DELETE FROM users WHERE email=NULL"
+const insert = "DELETE FROM usuarios WHERE email=NULL"
 
 conection.query(insert,(err,rows) => {
     if(err) throw err
 })
 
-conection.query('SELECT * FROM users', (err,rows)=> {
+conection.query('SELECT * FROM usuarios', (err,rows)=> {
     if(err) throw err
+    usuarios = [];
     rows.forEach(row => {
-        console.log(`Name: ${row.Name} - Email: ${row.Email} - Age: ${row.Age}`);
-        html += `
-            <div>
-                <h2>${row.Name} (${row.Age})</h2>
-                <h3>${row.Email}</h3>
-                <hr>
-            </div>
-        `
+        dataRow = {
+            ID: row.id,
+            Login: row.login,
+            Nickname: row.nickname,
+            Password: row.password,
+            Email: row.email}
+        usuarios.push(dataRow);
     })
+    app.get('/usuarios', function (req, res) {
+        res.send(usuarios);
+     })
 })
 
-const text = document.createElement('div')
-text.innerHTML = html
-console.log(html);
-
 conection.end()
+console.log("conection ended");
