@@ -12,5 +12,30 @@
     <div id="root">
         <button id="btn-consultar">Consultar</button>
     </div>
+    <script>
+        const root = document.getElementById("root");
+        const btnConsultar = document.getElementById('btn-consultar') //as HTMLButtonElement;
+        const dataFetch = [];
+
+        btnConsultar.addEventListener('click', ()=>{
+            console.log("click");
+            fetch('/usuarios')
+            .then(res => res.json())
+            .then(data => {
+                const card = document.createElement('div');
+                card.innerHTML = `
+                    <h2>${data[0].ID}</h2>
+                    <h3>email: ${data[0].Email}</h3>
+                    <h4>Nickname: ${data[0].Nickname}</h4>
+                    <h4>Login: ${data[0].Login}</h4>
+                    <h4>Password: ${data[0].Password}</h4>
+                `;
+
+                root.appendChild(card)
+            })
+        }); 
+
+
+    </script>
 </body>
 </html>
